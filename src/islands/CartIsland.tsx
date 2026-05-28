@@ -20,7 +20,9 @@ interface CartItem {
   itemId: string;
   quantity: number;
   name?: string;
-  price?: number;
+  // Decimal currency string from /public/cart (e.g. "49.99"), matching the
+  // dashboard cart's CartItem shape — NOT integer cents.
+  unitPrice?: string;
 }
 
 interface CartResponse {
@@ -31,7 +33,7 @@ interface CartResponse {
 function getOrCreateSessionToken(): string | null {
   // SSR-safe: returns null when there's no DOM.
   if (typeof window === 'undefined') return null;
-  const key = `deusrex-cart-session-${ORG_SLUG}`;
+  const key = `deusrex-cart-${ORG_SLUG}`;
   let token = window.localStorage.getItem(key);
   if (!token) {
     token = crypto.randomUUID();
@@ -193,8 +195,8 @@ export default function CartIsland(): JSX.Element {
                     </div>
                     <div className="sf-cart-drawer__item-meta">
                       Qty {item.quantity}
-                      {item.price != null
-                        ? ` · $${(item.price / 100).toFixed(2)}`
+                      {item.unitPrice != null
+                        ? ` · $${parseFloat(item.unitPrice).toFixed(2)}`
                         : ''}
                     </div>
                   </div>

@@ -78,6 +78,12 @@ const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
     <style define:vars={{
       'brand-primary': designSystem?.primaryColor || business.primaryColor || '#0f172a',
       'brand-secondary': designSystem?.secondaryColor || business.secondaryColor || '#0f172a',
+      'brand-accent': designSystem?.accentColor || designSystem?.primaryColor || business.primaryColor || '#0f172a',
+      'brand-bg': designSystem?.backgroundColor || '#ffffff',
+      'brand-surface': designSystem?.surfaceColor || '#f8fafc',
+      'brand-text': designSystem?.textColor || '#0f172a',
+      'brand-text-muted': designSystem?.mutedTextColor || '#64748b',
+      'brand-radius': designSystem?.borderRadius || '0.5rem',
       'brand-font': `'${fontFamily}', sans-serif`,
       'brand-heading-font': `'${headingFontFamily}', sans-serif`,
     }}></style>

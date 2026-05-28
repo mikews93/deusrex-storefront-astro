@@ -18,13 +18,11 @@ export default function CheckoutResult({
 }: CheckoutResultProps) {
   useEffect(() => {
     if (status === 'success') {
-      // Clear cart session
-      localStorage.removeItem(`deusrex-cart-${orgSlug}`);
-
-      // Mark cart as converted on the backend
-      const sessionToken = localStorage.getItem(
-        `deusrex-cart-token-${orgSlug}`,
-      );
+      // Single canonical cart key (matches CartIsland + the dashboard's
+      // useCart): the value stored here IS the cart session token.
+      const key = `deusrex-cart-${orgSlug}`;
+      const sessionToken = localStorage.getItem(key);
+      // Mark the cart converted on the backend BEFORE clearing the token.
       if (sessionToken) {
         const apiBase = apiUrl.replace('/trpc', '');
         fetch(`${apiBase}/public/cart/${orgSlug}/${sessionToken}`, {
@@ -32,8 +30,9 @@ export default function CheckoutResult({
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ status: 'CONVERTED' }),
         }).catch(() => {});
-        localStorage.removeItem(`deusrex-cart-token-${orgSlug}`);
       }
+      // Clear cart identity so the next visit starts a fresh cart.
+      localStorage.removeItem(key);
     }
   }, [status, orgSlug, apiUrl]);
 
