@@ -1,0 +1,24 @@
+---
+/**
+ * Services list — static shell, fetches catalog client-side at runtime.
+ * Spec 004 FR-003 / FR-003a: build is catalog-independent; the page itself
+ * always returns 200 and the island handles loading/empty/error UI.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import CatalogList from '../../islands/CatalogList.tsx';
+---
+
+<SubPageLayout title="Services">
+  <div class="sf-container">
+    <h1 class="sf-page-title">Services</h1>
+    <CatalogList
+      client:load
+      section="services"
+      detailPathBase="/services"
+      emptyState={{
+        title: 'No services yet',
+        description: 'Check back soon for our service offerings.',
+      }}
+    />
+  </div>
+</SubPageLayout>

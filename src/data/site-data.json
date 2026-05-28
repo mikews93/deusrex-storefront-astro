@@ -1,0 +1,35 @@
+{
+  "business": {
+    "name": "My Business",
+    "description": "Professional healthcare services",
+    "orgSlug": "my-business",
+    "primaryColor": "#0f172a",
+    "secondaryColor": "#475569",
+    "logoUrl": null
+  },
+  "website": {
+    "language": "en",
+    "fontFamily": "Inter",
+    "seoTitle": null,
+    "seoDescription": null,
+    "seoKeywords": null,
+    "ogImageUrl": null,
+    "faviconUrl": null,
+    "showChat": false,
+    "chatWidgetUrl": null,
+    "jsonLdScript": ""
+  },
+  "designSystem": {
+    "primaryColor": "#0f172a",
+    "secondaryColor": "#475569",
+    "accentColor": "#3b82f6",
+    "backgroundColor": "#faf9f5",
+    "surfaceColor": "#ffffff",
+    "textColor": "#1e293b",
+    "mutedTextColor": "#64748b",
+    "fontFamily": "Inter",
+    "headingFontFamily": "Inter",
+    "colorMode": "light",
+    "borderRadius": "0.75rem"
+  }
+}

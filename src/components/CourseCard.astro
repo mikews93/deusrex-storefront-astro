@@ -1,0 +1,31 @@
+---
+interface Props {
+  course: {
+    id: string;
+    title: string;
+    description?: string | null;
+    price?: number | null;
+    imageUrl?: string | null;
+  };
+}
+
+const { course } = Astro.props;
+---
+
+<a href={`/courses/${course.id}`} class="sf-card sf-card--course">
+  {course.imageUrl && (
+    <div class="sf-card__image-wrap">
+      <img src={course.imageUrl} alt={course.title} class="sf-card__image" loading="lazy" />
+    </div>
+  )}
+  <div class="sf-card__body">
+    <span class="sf-badge">Online Course</span>
+    <h3 class="sf-card__title">{course.title}</h3>
+    {course.description && (
+      <p class="sf-card__desc">{course.description}</p>
+    )}
+    <p class="sf-card__price">
+      {course.price != null && course.price > 0 ? `$${(course.price / 100).toFixed(2)}` : 'Free'}
+    </p>
+  </div>
+</a>

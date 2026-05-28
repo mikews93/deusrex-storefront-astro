@@ -1,0 +1,13 @@
+---
+/**
+ * Course detail — single dynamic-shell template. No /api/v1/courses/:id
+ * endpoint exists today (T004 audit); the island filters the list response
+ * client-side.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import CatalogDetail from '../../islands/CatalogDetail.tsx';
+---
+
+<SubPageLayout title="Course">
+  <CatalogDetail client:load section="courses" backHref="/courses" />
+</SubPageLayout>

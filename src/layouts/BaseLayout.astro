@@ -1,0 +1,96 @@
+---
+/**
+ * BaseLayout — wraps all pages with <head> (SEO, JSON-LD, fonts, CSS vars)
+ * and global UI elements (cart provider, chat widget).
+ *
+ * Props injected by AstroSiteGeneratorService at build time:
+ * - siteData is imported from a generated data module
+ */
+import '../styles/global.css';
+import '../styles/storefront.css';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+
+// Site data injected at build time
+const siteData = await import('../data/site-data.json');
+const { business, website, designSystem } = siteData.default || siteData;
+
+const pageTitle = title
+  ? `${title} | ${business.name}`
+  : website.seoTitle || business.name;
+const pageDescription = description || website.seoDescription || business.description || '';
+const siteUrl = Astro.site?.toString() || '';
+const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
+const fontFamily = designSystem?.fontFamily || website.fontFamily || 'Inter';
+const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
+---
+
+<!doctype html>
+<html lang={website.language || 'en'}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{pageTitle}</title>
+    <meta name="description" content={pageDescription} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    {/* Open Graph */}
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={pageDescription} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    {website.ogImageUrl && <meta property="og:image" content={website.ogImageUrl} />}
+
+    {/* Twitter */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={pageTitle} />
+    <meta name="twitter:description" content={pageDescription} />
+
+    {/* SEO keywords */}
+    {website.seoKeywords && <meta name="keywords" content={website.seoKeywords} />}
+
+    {/* Favicon */}
+    {website.faviconUrl
+      ? <link rel="icon" href={website.faviconUrl} />
+      : <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    }
+
+    {/* Google Fonts */}
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href={`https://fonts.googleapis.com/css2?family=${fontFamily.replace(/\s+/g, '+')}:wght@300;400;500;600;700&display=swap`}
+      rel="stylesheet"
+    />
+    {headingFontFamily !== fontFamily && (
+      <link
+        href={`https://fonts.googleapis.com/css2?family=${headingFontFamily.replace(/\s+/g, '+')}:wght@300;400;500;600;700&display=swap`}
+        rel="stylesheet"
+      />
+    )}
+
+    {/* Design system CSS variables */}
+    <style define:vars={{
+      'brand-primary': designSystem?.primaryColor || business.primaryColor || '#0f172a',
+      'brand-secondary': designSystem?.secondaryColor || business.secondaryColor || '#0f172a',
+      'brand-font': `'${fontFamily}', sans-serif`,
+      'brand-heading-font': `'${headingFontFamily}', sans-serif`,
+    }}></style>
+
+    {/* JSON-LD structured data — injected at build time */}
+    <Fragment set:html={website.jsonLdScript || ''} />
+  </head>
+  <body>
+    <slot />
+
+    {/* Chat widget */}
+    {website.showChat && website.chatWidgetUrl && (
+      <script src={website.chatWidgetUrl} data-widget-key={business.orgSlug} defer></script>
+    )}
+  </body>
+</html>

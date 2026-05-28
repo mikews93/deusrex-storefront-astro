@@ -1,0 +1,35 @@
+---
+/**
+ * SubPageLayout — wraps listing/detail pages with standard header + footer chrome.
+ * Used for /store, /services, /courses, /book, /checkout pages.
+ * Header and footer are static Astro components (zero JS).
+ */
+import BaseLayout from './BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import CartIsland from '../islands/CartIsland.tsx';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description}>
+  <Header />
+  <CartIsland client:load />
+  <main class="sf-main">
+    <slot />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .sf-main {
+    min-height: calc(100vh - 160px);
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+  }
+</style>

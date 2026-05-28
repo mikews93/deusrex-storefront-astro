@@ -1,0 +1,683 @@
+/*
+ * storefront.css — [TEMPLATE]
+ * Base styles for listing pages, detail pages, and cards.
+ * Shared across all orgs. Themed by CSS custom properties from global.css.
+ */
+
+.sf-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.sf-page-title {
+  font-family: var(--ai-heading-font);
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  letter-spacing: -0.02em;
+}
+
+/* ── Grids ── */
+
+.sf-product-grid,
+.sf-service-grid,
+.sf-course-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .sf-product-grid,
+  .sf-service-grid,
+  .sf-course-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ── Cards ── */
+
+.sf-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ai-surface);
+  border-radius: var(--ai-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sf-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.sf-card__image-wrap {
+  aspect-ratio: 4/3;
+  overflow: hidden;
+}
+
+.sf-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.sf-card__body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.sf-card__title {
+  font-family: var(--ai-heading-font);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.sf-card__desc {
+  font-size: 0.875rem;
+  color: var(--ai-text-muted);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sf-card__price {
+  font-weight: 600;
+  color: var(--ai-primary);
+  margin: 0;
+}
+
+.sf-card__meta {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+/* ── Detail pages ── */
+
+.sf-detail {
+  padding-top: 1rem;
+  padding-bottom: 4rem;
+}
+
+.sf-back-link {
+  display: inline-block;
+  color: var(--ai-text-muted);
+  text-decoration: none;
+  font-size: 0.875rem;
+  margin-bottom: 2rem;
+  transition: color 0.2s;
+}
+
+.sf-back-link:hover {
+  color: var(--ai-primary);
+}
+
+.sf-detail__layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3rem;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .sf-detail__layout {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.sf-detail__image-wrap {
+  border-radius: var(--ai-radius);
+  overflow: hidden;
+}
+
+.sf-detail__image {
+  width: 100%;
+  aspect-ratio: 4/3;
+  object-fit: cover;
+}
+
+.sf-detail__info {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.sf-detail__title {
+  font-family: var(--ai-heading-font);
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin: 0;
+}
+
+.sf-detail__description {
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ai-text-muted);
+  margin: 0;
+}
+
+.sf-detail__meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.sf-detail__price {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ai-primary);
+}
+
+/* ── Buttons ── */
+
+.sf-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem 1.5rem;
+  border-radius: var(--ai-radius);
+  font-weight: 600;
+  font-size: 0.9375rem;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.sf-btn--primary {
+  background: var(--ai-primary);
+  color: white;
+}
+
+.sf-btn--primary:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* ── Badges ── */
+
+.sf-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  background: var(--ai-primary);
+  color: white;
+  opacity: 0.9;
+}
+
+/* ── Empty state ── */
+
+.sf-empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--ai-text-muted);
+}
+
+/* ── Loading / error states ── */
+
+.sf-loading-state {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .sf-loading-state {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sf-skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.04) 0%,
+    rgba(0, 0, 0, 0.08) 50%,
+    rgba(0, 0, 0, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: sf-skeleton-shimmer 1.4s ease-in-out infinite;
+  border-radius: var(--ai-radius);
+}
+
+.sf-skeleton--card {
+  height: 280px;
+}
+
+.sf-skeleton--hero {
+  height: 320px;
+  margin-bottom: 1.5rem;
+}
+
+.sf-skeleton--text {
+  height: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+@keyframes sf-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.sf-error-state {
+  text-align: center;
+  padding: 4rem 2rem;
+  color: var(--ai-text-muted);
+}
+
+.sf-error-state h2 {
+  font-family: var(--ai-heading-font);
+  margin-bottom: 0.5rem;
+  color: var(--ai-text);
+}
+
+.sf-error-state p {
+  margin-bottom: 1.5rem;
+}
+
+/* ── Catalog list (used by CatalogList island) ── */
+
+.sf-catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+@media (max-width: 1024px) {
+  .sf-catalog-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .sf-catalog-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sf-catalog-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ai-surface);
+  border-radius: var(--ai-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+.sf-catalog-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.sf-catalog-card__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.sf-catalog-card__body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.sf-catalog-card__title {
+  font-family: var(--ai-heading-font);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ai-text);
+}
+
+.sf-catalog-card__description {
+  font-size: 0.875rem;
+  color: var(--ai-text-muted);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sf-catalog-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.sf-catalog-card__price {
+  font-weight: 700;
+  color: var(--ai-primary);
+  font-size: 1.125rem;
+}
+
+/* ──────────────────────────────────────────────────────────────────────────
+ * Home-page island base styles (sc-* prefix)
+ *
+ * The AI bundle emits its own themeCss for these classes per design style,
+ * but we keep readable baseline styles so a site is never unstyled if the
+ * AI omits theme rules. These are intentionally low-specificity so the
+ * AI's themeCss (loaded after) wins.
+ * ────────────────────────────────────────────────────────────────────── */
+
+.sc-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 4rem 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .sc-section {
+    padding: 2.5rem 1.25rem;
+  }
+}
+
+.sc-section__title {
+  font-family: var(--ai-heading-font);
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin: 0 0 0.5rem 0;
+  color: var(--ai-text);
+  letter-spacing: -0.02em;
+}
+
+.sc-section__subtitle {
+  font-size: 1.0625rem;
+  text-align: center;
+  color: var(--ai-text-muted);
+  margin: 0 0 2.5rem 0;
+  line-height: 1.5;
+}
+
+.sc-section__view-all {
+  display: block;
+  text-align: center;
+  margin-top: 2rem;
+  color: var(--ai-primary);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.sc-section__view-all:hover {
+  text-decoration: underline;
+}
+
+.sc-card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.sc-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--ai-surface);
+  border-radius: var(--ai-radius);
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  flex: 0 1 320px;
+  min-width: 280px;
+}
+
+.sc-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.sc-card__image {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+}
+
+.sc-card__body {
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.sc-card__title {
+  font-family: var(--ai-heading-font);
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ai-text);
+}
+
+.sc-card__desc {
+  font-size: 0.875rem;
+  color: var(--ai-text-muted);
+  line-height: 1.5;
+  margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.sc-card__meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-top: auto;
+}
+
+.sc-card__price {
+  font-weight: 700;
+  color: var(--ai-primary);
+  font-size: 1.0625rem;
+}
+
+.sc-card__duration {
+  color: var(--ai-text-muted);
+  font-size: 0.875rem;
+}
+
+.sc-card__cta {
+  color: var(--ai-primary);
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.sc-skeleton {
+  min-height: 280px;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.04) 0%,
+    rgba(0, 0, 0, 0.08) 50%,
+    rgba(0, 0, 0, 0.04) 100%
+  );
+  background-size: 200% 100%;
+  animation: sf-skeleton-shimmer 1.4s ease-in-out infinite;
+}
+
+/* ── Testimonials / FAQs / Policies / Locations / Contact (island defaults) ── */
+
+.sc-testimonial-card {
+  padding: 1.5rem;
+  background: var(--ai-surface);
+  border-radius: var(--ai-radius);
+  flex: 0 1 340px;
+  min-width: 280px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.sc-testimonial__content {
+  margin: 0 0 1rem 0;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ai-text);
+  font-style: italic;
+}
+
+.sc-testimonial__footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sc-testimonial__author {
+  font-weight: 600;
+  color: var(--ai-text);
+}
+
+.sc-testimonial__role {
+  color: var(--ai-text-muted);
+  font-size: 0.875rem;
+}
+
+.sc-testimonial__rating {
+  color: var(--ai-primary);
+  letter-spacing: 0.1em;
+}
+
+.sc-faq-list,
+.sc-policies-list {
+  max-width: 760px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.sc-faq-item,
+.sc-policy-item {
+  background: var(--ai-surface);
+  border-radius: var(--ai-radius);
+  padding: 1rem 1.25rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.sc-faq-item__question,
+.sc-policy-item__title {
+  font-weight: 600;
+  color: var(--ai-text);
+  cursor: pointer;
+  list-style: none;
+  position: relative;
+  padding-right: 1.5rem;
+}
+
+.sc-faq-item__question::after,
+.sc-policy-item__title::after {
+  content: '+';
+  position: absolute;
+  right: 0;
+  top: 0;
+  color: var(--ai-primary);
+  font-size: 1.25rem;
+  line-height: 1;
+}
+
+.sc-faq-item[open] .sc-faq-item__question::after,
+.sc-policy-item[open] .sc-policy-item__title::after {
+  content: '−';
+}
+
+.sc-faq-item__answer,
+.sc-policy-item__content {
+  margin-top: 0.75rem;
+  color: var(--ai-text-muted);
+  line-height: 1.6;
+}
+
+.sc-location-card {
+  padding: 1.5rem;
+  background: var(--ai-surface);
+  border-radius: var(--ai-radius);
+  flex: 0 1 320px;
+  min-width: 260px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sc-location__phone,
+.sc-location__email,
+.sc-contact__phone,
+.sc-contact__email {
+  color: var(--ai-primary);
+  text-decoration: none;
+}
+
+.sc-location__phone:hover,
+.sc-location__email:hover,
+.sc-contact__phone:hover,
+.sc-contact__email:hover {
+  text-decoration: underline;
+}
+
+.sc-contact-block {
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  color: var(--ai-text);
+}
+
+.sc-social-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+.sc-social-icon {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.875rem;
+  border-radius: 9999px;
+  background: var(--ai-surface);
+  color: var(--ai-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.sc-social-icon:hover {
+  background: var(--ai-primary);
+  color: white;
+}

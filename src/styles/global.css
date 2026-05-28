@@ -1,0 +1,31 @@
+/*
+ * global.css — [GENERATED]
+ * This file is replaced at build time with:
+ * 1. Design system CSS custom properties from the AI template bundle
+ * 2. AI-generated global CSS (scoped with sc- prefix)
+ *
+ * The placeholder below provides sensible defaults.
+ */
+
+@import "tailwindcss";
+
+:root {
+  --ai-primary: var(--brand-primary, #0f172a);
+  --ai-secondary: var(--brand-secondary, #475569);
+  --ai-accent: #3b82f6;
+  --ai-bg: #faf9f5;
+  --ai-surface: #ffffff;
+  --ai-text: #1e293b;
+  --ai-text-muted: #64748b;
+  --ai-font: var(--brand-font, 'Inter', sans-serif);
+  --ai-heading-font: var(--brand-heading-font, var(--ai-font));
+  --ai-radius: 0.75rem;
+}
+
+body {
+  font-family: var(--ai-font);
+  color: var(--ai-text);
+  background: var(--ai-bg);
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}

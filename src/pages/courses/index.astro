@@ -1,0 +1,22 @@
+---
+/**
+ * Courses list — static shell; fetches courses client-side. Spec 004 FR-003.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import CatalogList from '../../islands/CatalogList.tsx';
+---
+
+<SubPageLayout title="Courses">
+  <div class="sf-container">
+    <h1 class="sf-page-title">Courses</h1>
+    <CatalogList
+      client:load
+      section="courses"
+      detailPathBase="/courses"
+      emptyState={{
+        title: 'No courses yet',
+        description: 'Check back soon for upcoming courses.',
+      }}
+    />
+  </div>
+</SubPageLayout>

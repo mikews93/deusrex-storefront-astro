@@ -1,0 +1,21 @@
+---
+/**
+ * Checkout cancel page — SSR shell + React Island.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import CheckoutResult from '../../islands/CheckoutResult.tsx';
+
+const orgSlug = import.meta.env.ORG_SLUG;
+const apiUrl = import.meta.env.BACKEND_API_URL;
+---
+
+<SubPageLayout title="Checkout Cancelled">
+  <div class="sf-container">
+    <CheckoutResult
+      client:load
+      status="cancelled"
+      orgSlug={orgSlug}
+      apiUrl={apiUrl}
+    />
+  </div>
+</SubPageLayout>

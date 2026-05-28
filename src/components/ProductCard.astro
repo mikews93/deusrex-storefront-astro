@@ -1,0 +1,30 @@
+---
+interface Props {
+  product: {
+    id: string;
+    name: string;
+    description?: string | null;
+    price?: number | null;
+    imageUrl?: string | null;
+  };
+}
+
+const { product } = Astro.props;
+---
+
+<a href={`/store/${product.id}`} class="sf-card sf-card--product">
+  {product.imageUrl && (
+    <div class="sf-card__image-wrap">
+      <img src={product.imageUrl} alt={product.name} class="sf-card__image" loading="lazy" />
+    </div>
+  )}
+  <div class="sf-card__body">
+    <h3 class="sf-card__title">{product.name}</h3>
+    {product.description && (
+      <p class="sf-card__desc">{product.description}</p>
+    )}
+    <p class="sf-card__price">
+      {product.price != null ? `$${(product.price / 100).toFixed(2)}` : 'Free'}
+    </p>
+  </div>
+</a>

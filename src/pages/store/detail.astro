@@ -1,0 +1,12 @@
+---
+/**
+ * Product detail — single dynamic-shell template. CloudFront rewrites
+ * `/store/{id}` to this file.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import CatalogDetail from '../../islands/CatalogDetail.tsx';
+---
+
+<SubPageLayout title="Product">
+  <CatalogDetail client:load section="products" backHref="/store" />
+</SubPageLayout>

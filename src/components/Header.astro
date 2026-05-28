@@ -1,0 +1,59 @@
+---
+/**
+ * Header — [GENERATED] at build time from AI bundle headerHtml/headerCss.
+ * This placeholder will be replaced by AstroSiteGeneratorService.
+ */
+const siteData = await import('../data/site-data.json');
+const { business } = siteData.default || siteData;
+---
+
+<header class="sf-header">
+  <div class="sf-header__container">
+    <a href="/" class="sf-header__logo">{business.name}</a>
+    <nav class="sf-header__nav">
+      <a href="/">Home</a>
+      <a href="/services">Services</a>
+      <a href="/store">Store</a>
+      <a href="/courses">Courses</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .sf-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--brand-primary, #0f172a);
+    color: white;
+    padding: 1rem 0;
+  }
+  .sf-header__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .sf-header__logo {
+    font-family: var(--brand-heading-font, sans-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    text-decoration: none;
+  }
+  .sf-header__nav {
+    display: flex;
+    gap: 1.5rem;
+  }
+  .sf-header__nav a {
+    color: rgba(255, 255, 255, 0.85);
+    text-decoration: none;
+    font-size: 0.875rem;
+    transition: color 0.2s;
+  }
+  .sf-header__nav a:hover {
+    color: white;
+  }
+</style>

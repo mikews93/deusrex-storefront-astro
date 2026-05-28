@@ -1,0 +1,14 @@
+---
+/**
+ * Service detail — single dynamic-shell template. CloudFront's Function
+ * rewrites every `/services/{id}` request to this file. The island reads
+ * the real id from `window.location.pathname` and fetches the service from
+ * the public org API.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import CatalogDetail from '../../islands/CatalogDetail.tsx';
+---
+
+<SubPageLayout title="Service">
+  <CatalogDetail client:load section="services" backHref="/services" showBookingCta={true} />
+</SubPageLayout>

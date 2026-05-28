@@ -1,0 +1,31 @@
+---
+/**
+ * Footer — [GENERATED] at build time from AI bundle footerHtml/footerCss.
+ * This placeholder will be replaced by AstroSiteGeneratorService.
+ */
+const siteData = await import('../data/site-data.json');
+const { business } = siteData.default || siteData;
+const year = new Date().getFullYear();
+---
+
+<footer class="sf-footer">
+  <div class="sf-footer__container">
+    <p>&copy; {year} {business.name}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .sf-footer {
+    background: var(--brand-primary, #0f172a);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 2rem 0;
+    margin-top: auto;
+  }
+  .sf-footer__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+  }
+</style>

@@ -1,0 +1,7 @@
+# Astro build outputs + cache
+.astro/
+dist/
+
+# Local env
+.env
+.env.local

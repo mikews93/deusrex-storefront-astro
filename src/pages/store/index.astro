@@ -1,0 +1,22 @@
+---
+/**
+ * Store list — static shell; fetches products client-side. Spec 004 FR-003.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import CatalogList from '../../islands/CatalogList.tsx';
+---
+
+<SubPageLayout title="Store">
+  <div class="sf-container">
+    <h1 class="sf-page-title">Store</h1>
+    <CatalogList
+      client:load
+      section="products"
+      detailPathBase="/store"
+      emptyState={{
+        title: 'No products yet',
+        description: 'Check back soon for our latest products.',
+      }}
+    />
+  </div>
+</SubPageLayout>

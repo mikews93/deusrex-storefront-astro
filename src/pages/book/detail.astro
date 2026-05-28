@@ -1,0 +1,15 @@
+---
+/**
+ * Booking for a pre-selected service — single dynamic-shell template.
+ * CloudFront rewrites `/book/{serviceId}` to this file; the wrapper island
+ * reads the id from `window.location.pathname` and passes it to BookingFlow.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import BookingForService from '../../islands/BookingForService.tsx';
+---
+
+<SubPageLayout title="Book Appointment">
+  <div class="sf-container">
+    <BookingForService client:load />
+  </div>
+</SubPageLayout>

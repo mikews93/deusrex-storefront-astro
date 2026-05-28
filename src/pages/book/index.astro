@@ -1,0 +1,16 @@
+---
+/**
+ * Booking landing — no pre-selected service. Spec 004 FR-003.
+ * Wraps the BookingFlow island via BookingForService, which pulls all of
+ * orgSlug/apiUrl/locale from the per-org runtime config (no import.meta.env
+ * lookups that would be undefined at template-build time).
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import BookingForService from '../../islands/BookingForService.tsx';
+---
+
+<SubPageLayout title="Book Appointment">
+  <div class="sf-container">
+    <BookingForService client:load />
+  </div>
+</SubPageLayout>

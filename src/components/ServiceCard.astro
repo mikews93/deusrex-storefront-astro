@@ -1,0 +1,34 @@
+---
+interface Props {
+  service: {
+    id: string;
+    name: string;
+    description?: string | null;
+    price?: number | null;
+    duration?: number | null;
+    imageUrl?: string | null;
+  };
+}
+
+const { service } = Astro.props;
+---
+
+<a href={`/services/${service.id}`} class="sf-card sf-card--service">
+  {service.imageUrl && (
+    <div class="sf-card__image-wrap">
+      <img src={service.imageUrl} alt={service.name} class="sf-card__image" loading="lazy" />
+    </div>
+  )}
+  <div class="sf-card__body">
+    <h3 class="sf-card__title">{service.name}</h3>
+    {service.description && (
+      <p class="sf-card__desc">{service.description}</p>
+    )}
+    <div class="sf-card__meta">
+      {service.duration && <span class="sf-badge">&#128337; {service.duration} min</span>}
+      <span class="sf-card__price">
+        {service.price != null ? `$${(service.price / 100).toFixed(2)}` : 'Consultation'}
+      </span>
+    </div>
+  </div>
+</a>
