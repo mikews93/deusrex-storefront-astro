@@ -1,3 +1,6 @@
+# Deps (installed fresh during the publish-Lambda image build)
+node_modules/
+
 # Astro build outputs + cache
 .astro/
 dist/
