@@ -1,18 +1,14 @@
 import { useEffect, useState } from 'react';
-import BookingFlow from './BookingFlow';
-import {
-  LOCALE,
-  ORG_SLUG,
-  PUBLIC_API_BASE_URL,
-} from '../runtime/public-api-config';
+import { StorefrontProviders } from './StorefrontProviders';
+import BookingPage from '@/storefront/pages/BookingPage';
 
 /**
- * Thin island that extracts the service id from the URL (CloudFront rewrites
- * `/book/{serviceId}` → `/book/_detail.html`) and hands it to the existing
- * BookingFlow island. The runtime config (org slug, API base URL, locale)
- * comes from the per-org public-api-config module — no Astro `import.meta.env`.
+ * /book island. Extracts the service id from the URL (`/book/{serviceId}`,
+ * CloudFront rewrites to detail.html but the browser path is preserved) and
+ * renders the real ported booking flow. `/book` with no id shows the
+ * service-selection step.
  */
-export default function BookingForService(): JSX.Element {
+export default function BookingForService() {
   const [serviceId, setServiceId] = useState<string | undefined>(undefined);
   const [ready, setReady] = useState(false);
 
@@ -21,7 +17,7 @@ export default function BookingForService(): JSX.Element {
     const path = window.location.pathname;
     if (path.startsWith(prefix)) {
       const tail = path.slice(prefix.length).replace(/\/$/, '');
-      if (tail && tail !== '_detail') setServiceId(tail);
+      if (tail && tail !== '_detail' && tail !== 'detail') setServiceId(tail);
     }
     setReady(true);
   }, []);
@@ -35,11 +31,8 @@ export default function BookingForService(): JSX.Element {
   }
 
   return (
-    <BookingFlow
-      serviceId={serviceId}
-      orgSlug={ORG_SLUG}
-      apiUrl={PUBLIC_API_BASE_URL}
-      locale={LOCALE}
-    />
+    <StorefrontProviders>
+      <BookingPage serviceId={serviceId} />
+    </StorefrontProviders>
   );
 }
