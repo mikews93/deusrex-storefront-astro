@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ORG_SLUG, publicPath, v1 } from '../runtime/public-api-config';
+import { formatPrice } from '../utils/format-price';
 
 /**
  * Dynamic-shell detail view (Spec 004 FR-003). The CloudFront Function
@@ -176,7 +177,7 @@ export default function CatalogDetail({
             )}
             {item.price != null && (
               <span className="sf-detail__price">
-                ${(item.price / 100).toFixed(2)}
+                ${formatPrice(item.price)}
               </span>
             )}
           </div>

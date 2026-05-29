@@ -1,4 +1,6 @@
 ---
+import { formatPrice } from '../utils/format-price';
+
 interface Props {
   service: {
     id: string;
@@ -27,7 +29,7 @@ const { service } = Astro.props;
     <div class="sf-card__meta">
       {service.duration && <span class="sf-badge">&#128337; {service.duration} min</span>}
       <span class="sf-card__price">
-        {service.price != null ? `$${(service.price / 100).toFixed(2)}` : 'Consultation'}
+        {service.price != null ? `$${formatPrice(service.price)}` : 'Consultation'}
       </span>
     </div>
   </div>

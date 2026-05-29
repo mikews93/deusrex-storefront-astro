@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { v1 } from '../runtime/public-api-config';
+import { formatPrice } from '../utils/format-price';
 
 /**
  * Dynamic-shell list view for services, products, and courses (Spec 004 FR-003).
@@ -125,7 +126,7 @@ export default function CatalogList({
                 )}
                 {item.price != null && (
                   <span className="sf-catalog-card__price">
-                    ${(item.price / 100).toFixed(2)}
+                    ${formatPrice(item.price)}
                   </span>
                 )}
               </div>

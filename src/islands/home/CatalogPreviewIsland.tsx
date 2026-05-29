@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { v1 } from '../../runtime/public-api-config';
+import { formatPrice } from '../../utils/format-price';
 
 /**
  * Home-page preview for services / products / courses (Spec 004).
@@ -147,7 +148,7 @@ export default function CatalogPreviewIsland(
                   )}
                   {item.price != null && (
                     <span className="sc-card__price">
-                      ${(item.price / 100).toFixed(2)}
+                      ${formatPrice(item.price)}
                     </span>
                   )}
                 </div>

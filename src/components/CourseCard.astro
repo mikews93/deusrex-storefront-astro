@@ -1,4 +1,6 @@
 ---
+import { formatPrice } from '../utils/format-price';
+
 interface Props {
   course: {
     id: string;
@@ -25,7 +27,7 @@ const { course } = Astro.props;
       <p class="sf-card__desc">{course.description}</p>
     )}
     <p class="sf-card__price">
-      {course.price != null && course.price > 0 ? `$${(course.price / 100).toFixed(2)}` : 'Free'}
+      {course.price != null && course.price > 0 ? `$${formatPrice(course.price)}` : 'Free'}
     </p>
   </div>
 </a>
