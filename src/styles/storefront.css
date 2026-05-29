@@ -681,3 +681,48 @@
   background: var(--ai-primary);
   color: white;
 }
+
+/* ──────────────────────────────────────────────────────────
+ * Floating action button (FAB) stack
+ *
+ * The storefront has up to three persistent floating actions that all want
+ * the bottom-right corner: the cart (React island), the WhatsApp button
+ * (AI-generated footer HTML), and the live-chat widget (externally injected).
+ * They are rendered by three independent systems, so left to themselves they
+ * collide on top of each other. This is the single platform-owned container:
+ * every floating action becomes an in-flow child of `.sc-fab-stack` and the
+ * platform — not the AI or the widget — owns positioning. A small adoption
+ * script in BaseLayout re-parents the non-React actors into this container.
+ * ────────────────────────────────────────────────────────── */
+.sc-fab-stack {
+  position: fixed;
+  right: 1.5rem;
+  bottom: calc(1.5rem + env(safe-area-inset-bottom, 0px));
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.75rem;
+  /* container ignores clicks so the gaps between buttons stay non-blocking… */
+  pointer-events: none;
+}
+/* …but every floating action inside it is interactive. */
+.sc-fab-stack > * {
+  pointer-events: auto;
+  /* Neutralise any self-positioning the AI footer or chat widget applied —
+   * inside the stack everything flows in the column. `relative` (not static)
+   * keeps a positioning context for children like the cart's count badge. */
+  position: relative !important;
+  inset: auto !important;
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  margin: 0 !important;
+}
+/* Commerce-first column order (cart closest to the thumb / lowest). Higher
+ * `order` sits later in the column = nearer the bottom. flex auto-collapses
+ * gaps when an action is absent (e.g. empty cart renders nothing). */
+.sc-fab--chat { order: 1; }
+.sc-fab--whatsapp { order: 2; }
+.sc-fab--cart { order: 3; }

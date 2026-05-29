@@ -94,9 +94,53 @@ const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
   <body>
     <slot />
 
+    {/* Platform floating-action stack — the single owner of the bottom-right
+        corner. The cart island portals its button in here; the WhatsApp anchor
+        (AI footer) and the chat bubble (injected widget) are re-parented into
+        it by the adoption script below, so the three never collide. */}
+    <div id="sc-fab-stack" class="sc-fab-stack" aria-label="Quick actions"></div>
+
     {/* Chat widget */}
     {website.showChat && website.chatWidgetUrl && (
       <script src={website.chatWidgetUrl} data-widget-key={business.orgSlug} defer></script>
     )}
+
+    {/* Adopt non-React floating actions into the FAB stack. The cart button is
+        placed via a React portal; this only handles the WhatsApp anchor and any
+        late-injected chat bubble (convention: .sc-chat-fab). */}
+    <script is:inline>
+      (function () {
+        var stack = document.getElementById('sc-fab-stack');
+        if (!stack) return;
+        function adopt(el, cls) {
+          if (!el || el.parentElement === stack) return;
+          el.classList.add('sc-fab');
+          if (cls) el.classList.add(cls);
+          stack.appendChild(el);
+        }
+        function scan() {
+          document
+            .querySelectorAll('a.sc-whatsapp-fab, a[href*="wa.me"]')
+            .forEach(function (a) {
+              var href = (a.getAttribute('href') || '').trim();
+              // Drop dead links with no phone number (e.g. "https://wa.me/").
+              if (/wa\.me\/?$/.test(href)) {
+                a.remove();
+                return;
+              }
+              adopt(a, 'sc-fab--whatsapp');
+            });
+          document.querySelectorAll('.sc-chat-fab').forEach(function (c) {
+            adopt(c, null);
+          });
+        }
+        scan();
+        // Chat widgets inject themselves after load — keep adopting late arrivals.
+        new MutationObserver(scan).observe(document.body, {
+          childList: true,
+          subtree: true,
+        });
+      })();
+    </script>
   </body>
 </html>
