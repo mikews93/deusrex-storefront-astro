@@ -198,13 +198,14 @@ export default function BookingPage({
                   </div>
                 ) : flow.slots && flow.slots.length > 0 ? (
                   (() => {
-                    const now = new Date();
-                    const todayStr = now.toISOString().split('T')[0];
-                    const isToday = flow.selectedDate === todayStr;
-                    const currentTime = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
-                    const availableSlots = isToday
-                      ? flow.slots.filter((s) => s.startTime > currentTime)
-                      : flow.slots;
+                    // Trust the server: it returns the day's bookable slots.
+                    // The previous client-side "today" filter compared slot
+                    // times (in the org's TZ) against the viewer's browser
+                    // clock, which hid every remaining slot for anyone whose
+                    // browser was ahead of the org's TZ — so today's calendar
+                    // looked empty even when slots existed. The booking
+                    // endpoint rejects past slots server-side.
+                    const availableSlots = flow.slots;
 
                     return availableSlots.length > 0 ? (
                       <div className="grid grid-cols-3 gap-2">

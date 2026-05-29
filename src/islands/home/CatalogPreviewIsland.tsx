@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { v1 } from '../../runtime/public-api-config';
-import { formatPrice } from '../../utils/format-price';
+import { StorefrontProviders } from '../StorefrontProviders';
+import { useFormatCurrency } from '@/storefront/hooks/useFormatCurrency';
 
 /**
  * Home-page preview for services / products / courses (Spec 004).
@@ -60,9 +61,10 @@ const KIND_TO_VIEW_ALL: Record<Kind, string> = {
   courses: 'Ver todos los cursos →',
 };
 
-export default function CatalogPreviewIsland(
+function CatalogPreviewIslandInner(
   props: CatalogPreviewProps,
 ): JSX.Element | null {
+  const formatCurrency = useFormatCurrency();
   const { section, title, subtitle, limit = 6 } = props;
   const [items, setItems] = useState<CatalogItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -148,7 +150,7 @@ export default function CatalogPreviewIsland(
                   )}
                   {item.price != null && (
                     <span className="sc-card__price">
-                      ${formatPrice(item.price)}
+                      {formatCurrency(item.price)}
                     </span>
                   )}
                 </div>
@@ -164,5 +166,13 @@ export default function CatalogPreviewIsland(
         </a>
       )}
     </section>
+  );
+}
+
+export default function CatalogPreviewIsland(props: CatalogPreviewProps) {
+  return (
+    <StorefrontProviders>
+      <CatalogPreviewIslandInner {...props} />
+    </StorefrontProviders>
   );
 }

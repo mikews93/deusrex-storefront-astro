@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ORG_SLUG, publicPath, v1 } from '../runtime/public-api-config';
-import { formatPrice } from '../utils/format-price';
+import { StorefrontProviders } from './StorefrontProviders';
+import { useFormatCurrency } from '@/storefront/hooks/useFormatCurrency';
 
 /**
  * Dynamic-shell detail view (Spec 004 FR-003). The CloudFront Function
@@ -71,11 +72,12 @@ async function fetchDetail(
   return list.find((c) => c.id === id) ?? null;
 }
 
-export default function CatalogDetail({
+function CatalogDetailInner({
   section,
   backHref,
   showBookingCta,
 }: CatalogDetailProps): JSX.Element {
+  const formatCurrency = useFormatCurrency();
   const [state, setState] = useState<
     | { kind: 'loading' }
     | { kind: 'not-found' }
@@ -177,7 +179,7 @@ export default function CatalogDetail({
             )}
             {item.price != null && (
               <span className="sf-detail__price">
-                ${formatPrice(item.price)}
+                {formatCurrency(item.price)}
               </span>
             )}
           </div>
@@ -219,5 +221,13 @@ export default function CatalogDetail({
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CatalogDetail(props: CatalogDetailProps) {
+  return (
+    <StorefrontProviders>
+      <CatalogDetailInner {...props} />
+    </StorefrontProviders>
   );
 }

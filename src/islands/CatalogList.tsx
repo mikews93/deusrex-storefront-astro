@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { v1 } from '../runtime/public-api-config';
-import { formatPrice } from '../utils/format-price';
+import { StorefrontProviders } from './StorefrontProviders';
+import { useFormatCurrency } from '@/storefront/hooks/useFormatCurrency';
 
 /**
  * Dynamic-shell list view for services, products, and courses (Spec 004 FR-003).
@@ -31,12 +32,13 @@ interface CatalogListProps {
   itemLabel?: (item: CatalogItem) => string;
 }
 
-export default function CatalogList({
+function CatalogListInner({
   section,
   detailPathBase,
   emptyState,
   itemLabel,
 }: CatalogListProps): JSX.Element {
+  const formatCurrency = useFormatCurrency();
   const [items, setItems] = useState<CatalogItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -126,7 +128,7 @@ export default function CatalogList({
                 )}
                 {item.price != null && (
                   <span className="sf-catalog-card__price">
-                    ${formatPrice(item.price)}
+                    {formatCurrency(item.price)}
                   </span>
                 )}
               </div>
@@ -135,5 +137,18 @@ export default function CatalogList({
         );
       })}
     </div>
+  );
+}
+
+/**
+ * Wrap in StorefrontProviders so the catalog list can format prices in the
+ * org's currency (COP / USD / …) via useFormatCurrency, matching the cart
+ * drawer's "COP 20,000.00" formatting instead of a bare "$".
+ */
+export default function CatalogList(props: CatalogListProps) {
+  return (
+    <StorefrontProviders>
+      <CatalogListInner {...props} />
+    </StorefrontProviders>
   );
 }
