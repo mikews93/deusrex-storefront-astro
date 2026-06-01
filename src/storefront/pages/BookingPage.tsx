@@ -777,18 +777,26 @@ function InlineCalendar({
   const viewYear = visibleYear;
   const viewMonth = visibleMonth;
 
-  // Auto-jump: once we know the professional's soonest bookable day, jump the
-  // calendar there if the user hasn't picked a date yet and the soonest day
-  // isn't already in the visible month. Without this, late-month or early-
-  // career professionals show an empty current month with no clue to navigate.
+  // Auto-jump (one-shot per professional): once we know the soonest bookable
+  // day, jump the calendar there if the user hasn't picked a date yet. We
+  // only do this on the FIRST nextAvailableDay value we see — if the user
+  // later navigates the calendar manually, we don't snap them back. The
+  // jumpedForRef tracks which "nextAvailableDay" we already acted on so the
+  // effect doesn't fire again on visibleMonth changes.
+  const jumpedForRef = useRef<string | null>(null);
   useEffect(() => {
     if (!nextAvailableDay || selectedDate) return;
+    if (jumpedForRef.current === nextAvailableDay) return;
+    jumpedForRef.current = nextAvailableDay;
     const [yStr, mStr] = nextAvailableDay.split('-');
     const targetYear = Number(yStr);
     const targetMonth = Number(mStr) - 1;
     if (targetYear === viewYear && targetMonth === viewMonth) return;
     onVisibleMonthChange(targetYear, targetMonth);
-  }, [nextAvailableDay, selectedDate, viewYear, viewMonth, onVisibleMonthChange]);
+    // viewYear/viewMonth intentionally omitted — we only react to a new
+    // nextAvailableDay, not to user navigation.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [nextAvailableDay, selectedDate, onVisibleMonthChange]);
 
   const dayNames = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
   const monthNames = [
