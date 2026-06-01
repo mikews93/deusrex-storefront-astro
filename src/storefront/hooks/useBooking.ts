@@ -105,23 +105,60 @@ export function useBookingAvailability(
   });
 }
 
-export function useBookingAvailableDays(
+/**
+ * Available days for a single month — used by the booking calendar's per-month
+ * lazy fetch. React Query caches each (year, month) key so navigating back to
+ * a previously-viewed month is instant.
+ */
+export function useBookingAvailableDaysForMonth(
   orgSlug: string,
   professionalId: string,
-  days: number = 14,
+  year: number,
+  month: number, // 0-indexed JS month
 ) {
   return useQuery<string[]>({
-    queryKey: ['booking-available-days', orgSlug, professionalId, days],
+    queryKey: [
+      'booking-available-days-month',
+      orgSlug,
+      professionalId,
+      year,
+      month,
+    ],
     queryFn: async () => {
-      const params = new URLSearchParams({
-        professionalId,
-        days: String(days),
-      });
+      const from = `${year}-${String(month + 1).padStart(2, '0')}-01`;
+      const lastDay = new Date(year, month + 1, 0).getDate();
+      const to = `${year}-${String(month + 1).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
+      const params = new URLSearchParams({ professionalId, from, to });
       const res = await fetch(
         `${API_BASE}/public/booking/${orgSlug}/available-days?${params}`,
       );
       if (!res.ok) throw new Error('Failed to fetch available days');
       return res.json();
+    },
+    enabled: !!orgSlug && !!professionalId,
+  });
+}
+
+/**
+ * Soonest bookable day for the professional. Drives the calendar's auto-jump
+ * so the initial view lands on a month that actually has availability instead
+ * of a current month with no bookable days. Returns null when nothing is
+ * bookable within the backend's horizon.
+ */
+export function useBookingNextAvailableDay(
+  orgSlug: string,
+  professionalId: string,
+) {
+  return useQuery<string | null>({
+    queryKey: ['booking-next-available-day', orgSlug, professionalId],
+    queryFn: async () => {
+      const params = new URLSearchParams({ professionalId });
+      const res = await fetch(
+        `${API_BASE}/public/booking/${orgSlug}/next-available-day?${params}`,
+      );
+      if (!res.ok) throw new Error('Failed to fetch next available day');
+      const body = (await res.json()) as { date: string | null };
+      return body.date;
     },
     enabled: !!orgSlug && !!professionalId,
   });

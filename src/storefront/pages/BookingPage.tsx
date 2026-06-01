@@ -184,6 +184,10 @@ export default function BookingPage({
               availableDays={availableSet}
               isLoading={flow.loadingDays}
               disabled={!flow.selectedProfessionalId}
+              visibleYear={flow.visibleYear}
+              visibleMonth={flow.visibleMonth}
+              onVisibleMonthChange={flow.setVisibleMonth}
+              nextAvailableDay={flow.nextAvailableDay}
             />
 
             {/* Time Slots */}
@@ -750,20 +754,41 @@ function InlineCalendar({
   availableDays,
   isLoading,
   disabled,
+  visibleYear,
+  visibleMonth,
+  onVisibleMonthChange,
+  nextAvailableDay,
 }: {
   selectedDate: string;
   onDateSelect: (date: string) => void;
   availableDays: Set<string> | null;
   isLoading: boolean;
   disabled: boolean;
+  visibleYear: number;
+  visibleMonth: number;
+  onVisibleMonthChange: (year: number, month: number) => void;
+  nextAvailableDay: string | null | undefined;
 }) {
   const { t } = useTranslation();
   const today = new Date();
   const todayStr = today.toISOString().split('T')[0];
-  const initial = selectedDate ? new Date(selectedDate + 'T12:00:00') : today;
+  // The visible month is owned by the parent so the per-month availability
+  // fetch can refire when the user navigates. We just read it here.
+  const viewYear = visibleYear;
+  const viewMonth = visibleMonth;
 
-  const [viewYear, setViewYear] = useState(initial.getFullYear());
-  const [viewMonth, setViewMonth] = useState(initial.getMonth());
+  // Auto-jump: once we know the professional's soonest bookable day, jump the
+  // calendar there if the user hasn't picked a date yet and the soonest day
+  // isn't already in the visible month. Without this, late-month or early-
+  // career professionals show an empty current month with no clue to navigate.
+  useEffect(() => {
+    if (!nextAvailableDay || selectedDate) return;
+    const [yStr, mStr] = nextAvailableDay.split('-');
+    const targetYear = Number(yStr);
+    const targetMonth = Number(mStr) - 1;
+    if (targetYear === viewYear && targetMonth === viewMonth) return;
+    onVisibleMonthChange(targetYear, targetMonth);
+  }, [nextAvailableDay, selectedDate, viewYear, viewMonth, onVisibleMonthChange]);
 
   const dayNames = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
   const monthNames = [

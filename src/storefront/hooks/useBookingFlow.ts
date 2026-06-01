@@ -11,7 +11,8 @@ import {
   useBookingServices,
   useBookingProfessionals,
   useBookingAvailability,
-  useBookingAvailableDays,
+  useBookingAvailableDaysForMonth,
+  useBookingNextAvailableDay,
   useCreateBooking,
   useServiceRequirements,
 } from './useBooking';
@@ -57,6 +58,18 @@ export function useBookingFlow({
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedSlot, setSelectedSlot] = useState('');
   const [requirementsCompleted, setRequirementsCompleted] = useState(false);
+  // Calendar visible month — owned here so the per-month availability fetch
+  // can re-run when the user navigates the calendar.
+  const initialMonth = (() => {
+    const d = new Date();
+    return { year: d.getFullYear(), month: d.getMonth() };
+  })();
+  const [visibleYear, setVisibleYear] = useState(initialMonth.year);
+  const [visibleMonth, setVisibleMonth] = useState(initialMonth.month);
+  const setVisibleMonthYear = useCallback((year: number, month: number) => {
+    setVisibleYear(year);
+    setVisibleMonth(month);
+  }, []);
 
   /** API hooks */
   const { data: services, isLoading: loadingServices } = useBookingServices(
@@ -71,7 +84,16 @@ export function useBookingFlow({
     selectedServiceId,
   );
   const { data: availableDays, isLoading: loadingDays } =
-    useBookingAvailableDays(orgSlug!, selectedProfessionalId);
+    useBookingAvailableDaysForMonth(
+      orgSlug!,
+      selectedProfessionalId,
+      visibleYear,
+      visibleMonth,
+    );
+  const { data: nextAvailableDay } = useBookingNextAvailableDay(
+    orgSlug!,
+    selectedProfessionalId,
+  );
   const createBooking = useCreateBooking(orgSlug!);
   const { data: serviceRequirements = [] } = useServiceRequirements(
     orgSlug!,
@@ -309,6 +331,10 @@ export function useBookingFlow({
     professionals,
     slots,
     availableDays,
+    nextAvailableDay,
+    visibleYear,
+    visibleMonth,
+    setVisibleMonth: setVisibleMonthYear,
     serviceRequirements,
     hasMandatoryPreRequirements,
     requirementsCompleted,
