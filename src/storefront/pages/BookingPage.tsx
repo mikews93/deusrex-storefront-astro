@@ -833,15 +833,17 @@ function InlineCalendar({
 
   const goBack = () => {
     if (viewMonth === 0) {
-      setViewYear(viewYear - 1);
-      setViewMonth(11);
-    } else setViewMonth(viewMonth - 1);
+      onVisibleMonthChange(viewYear - 1, 11);
+    } else {
+      onVisibleMonthChange(viewYear, viewMonth - 1);
+    }
   };
   const goForward = () => {
     if (viewMonth === 11) {
-      setViewYear(viewYear + 1);
-      setViewMonth(0);
-    } else setViewMonth(viewMonth + 1);
+      onVisibleMonthChange(viewYear + 1, 0);
+    } else {
+      onVisibleMonthChange(viewYear, viewMonth + 1);
+    }
   };
 
   if (disabled) {
