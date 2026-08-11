@@ -25,7 +25,14 @@ const pageTitle = title
   : website.seoTitle || business.name;
 const pageDescription = description || website.seoDescription || business.description || '';
 const siteUrl = Astro.site?.toString() || '';
-const canonicalUrl = new URL(Astro.url.pathname, siteUrl).toString();
+// `build.format: 'file'` makes Astro.url.pathname the emitted object name
+// (/services.html), but every link on the site — and so every URL a crawler
+// reaches — is the extensionless one. Declaring the .html twin as canonical
+// would split the signal across two URLs serving identical content.
+const canonicalPath = Astro.url.pathname
+  .replace(/index\.html$/, '')
+  .replace(/\.html$/, '');
+const canonicalUrl = new URL(canonicalPath, siteUrl).toString();
 const fontFamily = designSystem?.fontFamily || website.fontFamily || 'Inter';
 const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
 ---
