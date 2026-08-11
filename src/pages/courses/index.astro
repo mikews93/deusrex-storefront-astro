@@ -4,18 +4,19 @@
  */
 import SubPageLayout from '../../layouts/SubPageLayout.astro';
 import CatalogList from '../../islands/CatalogList.tsx';
+import i18n from '../../i18n';
 ---
 
-<SubPageLayout title="Courses">
+<SubPageLayout title={i18n.t('storefront.nav.courses')}>
   <div class="sf-container">
-    <h1 class="sf-page-title">Courses</h1>
+    <h1 class="sf-page-title">{i18n.t('storefront.nav.courses')}</h1>
     <CatalogList
       client:load
       section="courses"
       detailPathBase="/courses"
       emptyState={{
-        title: 'No courses yet',
-        description: 'Check back soon for upcoming courses.',
+        title: i18n.t('storefront.pages.emptyCourses.title'),
+        description: i18n.t('storefront.pages.emptyCourses.description'),
       }}
     />
   </div>

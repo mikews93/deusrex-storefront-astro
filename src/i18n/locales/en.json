@@ -213,6 +213,23 @@
       "successMessage": "You will receive a confirmation email shortly.",
       "postRequirements": "Next steps",
       "backToServices": "Back to services"
+    },
+    "pages": {
+      "emptyServices": {
+        "title": "No services yet",
+        "description": "Check back soon for our service offerings."
+      },
+      "emptyProducts": {
+        "title": "No products yet",
+        "description": "Check back soon for our latest products."
+      },
+      "emptyCourses": {
+        "title": "No courses yet",
+        "description": "Check back soon for upcoming courses."
+      },
+      "serviceDetail": "Service",
+      "productDetail": "Product",
+      "courseDetail": "Course"
     }
   },
   "common": {

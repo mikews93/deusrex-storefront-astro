@@ -4,12 +4,13 @@
  */
 import SubPageLayout from '../../layouts/SubPageLayout.astro';
 import CheckoutResult from '../../islands/CheckoutResult.tsx';
+import i18n from '../../i18n';
 
 const orgSlug = import.meta.env.ORG_SLUG;
 const apiUrl = import.meta.env.BACKEND_API_URL;
 ---
 
-<SubPageLayout title="Order Confirmed">
+<SubPageLayout title={i18n.t('storefront.checkout.successTitle')}>
   <div class="sf-container">
     <CheckoutResult
       client:load

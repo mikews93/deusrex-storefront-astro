@@ -248,6 +248,23 @@
       "patientDob": "Fecha de Nacimiento",
       "relationship": "Parentesco con el Paciente",
       "selectRelationship": "Seleccionar..."
+    },
+    "pages": {
+      "emptyServices": {
+        "title": "Aún no hay servicios",
+        "description": "Vuelve pronto para ver nuestros servicios."
+      },
+      "emptyProducts": {
+        "title": "Aún no hay productos",
+        "description": "Vuelve pronto para ver nuestros productos."
+      },
+      "emptyCourses": {
+        "title": "Aún no hay cursos",
+        "description": "Vuelve pronto para ver los próximos cursos."
+      },
+      "serviceDetail": "Servicio",
+      "productDetail": "Producto",
+      "courseDetail": "Curso"
     }
   },
   "common": {

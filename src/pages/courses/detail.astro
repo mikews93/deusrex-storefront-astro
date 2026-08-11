@@ -6,8 +6,9 @@
  */
 import SubPageLayout from '../../layouts/SubPageLayout.astro';
 import CatalogDetail from '../../islands/CatalogDetail.tsx';
+import i18n from '../../i18n';
 ---
 
-<SubPageLayout title="Course">
+<SubPageLayout title={i18n.t('storefront.pages.courseDetail')}>
   <CatalogDetail client:load section="courses" backHref="/courses" />
 </SubPageLayout>
