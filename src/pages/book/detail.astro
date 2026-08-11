@@ -6,9 +6,10 @@
  */
 import SubPageLayout from '../../layouts/SubPageLayout.astro';
 import BookingForService from '../../islands/BookingForService.tsx';
+import i18n from '../../i18n';
 ---
 
-<SubPageLayout title="Book Appointment">
+<SubPageLayout title={i18n.t('storefront.booking.title')}>
   <div class="sf-container">
     <BookingForService client:load />
   </div>
