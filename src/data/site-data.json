@@ -17,7 +17,7 @@
     "faviconUrl": null,
     "showChat": false,
     "chatWidgetUrl": null,
-    "jsonLdScript": ""
+    "jsonLd": ""
   },
   "designSystem": {
     "primaryColor": "#0f172a",
