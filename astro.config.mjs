@@ -19,5 +19,11 @@ export default defineConfig({
   integrations: [react(), sitemap()],
   vite: {
     plugins: [tailwindcss()],
+    // Astro 7 (Vite 8) minifies CSS to Media Queries Level 4 range syntax
+    // (`@media (width>=40rem)`) by default. A browser without that support
+    // ignores the whole query, so every breakpoint on a published customer
+    // site would stop applying and the page would render at its base styles.
+    // Pinning the target keeps the emitted syntax where Astro 5 had it.
+    build: { cssTarget: ['chrome100', 'edge100', 'firefox100', 'safari15'] },
   },
 });
