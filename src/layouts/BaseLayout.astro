@@ -33,6 +33,13 @@ const canonicalPath = Astro.url.pathname
   .replace(/index\.html$/, '')
   .replace(/\.html$/, '');
 const canonicalUrl = new URL(canonicalPath, siteUrl).toString();
+// JSON-LD carries the structured-data OBJECT, never markup. This layout owns
+// the <script> tag, so the value can never introduce an element of its own.
+// Escaping `</` is what keeps a string value inside the tag it belongs to;
+// `\/` is a valid JSON escape for `/`, so the payload still parses. Same
+// treatment as the SSR renderer's document shell, which builds this tag too.
+const jsonLd =
+  typeof website.jsonLd === 'string' ? website.jsonLd.replace(/<\//g, '<\\/') : '';
 const fontFamily = designSystem?.fontFamily || website.fontFamily || 'Inter';
 const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
 ---
@@ -96,7 +103,7 @@ const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
     }}></style>
 
     {/* JSON-LD structured data — injected at build time */}
-    <Fragment set:html={website.jsonLdScript || ''} />
+    {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
   </head>
   <body>
     <slot />
