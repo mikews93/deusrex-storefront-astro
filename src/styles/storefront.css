@@ -783,6 +783,9 @@
 }
 .sc-section--v-feature .sc-card:first-child {
   grid-column: span 2;
+}
+/* Only a photo fills two rows; a text-only lead card would sit half empty. */
+.sc-section--v-feature .sc-card:first-child:has(.sc-card__image) {
   grid-row: span 2;
 }
 .sc-section--v-feature .sc-card:first-child .sc-card__image {
