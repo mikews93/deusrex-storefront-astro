@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { v1 } from '../../runtime/public-api-config';
 import { StorefrontProviders } from '../StorefrontProviders';
 import { useFormatCurrency } from '@/storefront/hooks/useFormatCurrency';
+import { sectionClass } from './section-variant';
 
 /**
  * Home-page preview for services / products / courses (Spec 004).
@@ -35,7 +36,11 @@ interface CatalogPreviewProps {
   title?: string;
   subtitle?: string;
   limit?: number;
+  /** Layout the generator chose (#2308); unknown values fall back to grid. */
+  variant?: string;
 }
+
+const CATALOG_VARIANTS = ['grid', 'list', 'feature'] as const;
 
 const KIND_TO_PATH: Record<Kind, string> = {
   services: '/services',
@@ -65,7 +70,7 @@ function CatalogPreviewIslandInner(
   props: CatalogPreviewProps,
 ): JSX.Element | null {
   const formatCurrency = useFormatCurrency();
-  const { section, title, subtitle, limit = 6 } = props;
+  const { section, title, subtitle, limit = 6, variant } = props;
   const [items, setItems] = useState<CatalogItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -117,7 +122,13 @@ function CatalogPreviewIslandInner(
   const viewAllHref = KIND_TO_PATH[section];
 
   return (
-    <section className={`sc-section sc-${section}-section`}>
+    <section
+      className={sectionClass(
+        `sc-${section}-section`,
+        variant,
+        CATALOG_VARIANTS,
+      )}
+    >
       {title && <h2 className="sc-section__title">{title}</h2>}
       {subtitle && <p className="sc-section__subtitle">{subtitle}</p>}
       <div className="sc-card-grid">

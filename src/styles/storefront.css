@@ -728,3 +728,258 @@
 .sc-fab--chat { order: 1; }
 .sc-fab--whatsapp { order: 2; }
 .sc-fab--cart { order: 3; }
+
+/* ── Layout variants (#2308) ──────────────────────────────────────────
+ * The generator picks one per data section via `data-variant`, so two
+ * sites (and two adjacent sections) stop sharing the same card grid.
+ * `grid` / `list` (FAQ) are the defaults above and need no rules here.
+ * Section CSS from the AI bundle can still restyle any of these.
+ */
+
+/* Catalog · list: rows a visitor scans like a price list. */
+.sc-section--v-list .sc-card-grid {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  max-width: 880px;
+  margin: 0 auto;
+  gap: 0.75rem;
+}
+.sc-section--v-list .sc-card {
+  flex: none;
+  min-width: 0;
+  flex-direction: row;
+  align-items: stretch;
+}
+.sc-section--v-list .sc-card__image {
+  width: 132px;
+  aspect-ratio: 1;
+  flex: none;
+}
+.sc-section--v-list .sc-card__body {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  column-gap: 1.5rem;
+}
+.sc-section--v-list .sc-card__meta {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  flex-direction: column;
+  align-items: flex-end;
+  margin: 0;
+}
+.sc-section--v-list .sc-card__cta {
+  display: none;
+}
+
+/* The variant owns card sizing: a width the theme CSS set for the default
+ * flex grid (e.g. max-width: 420px) would pin the lead card to one column. */
+.sc-section--v-feature .sc-card,
+.sc-section--v-list .sc-card,
+.sc-section--v-spotlight .sc-testimonial-card,
+.sc-section--v-stack .sc-testimonial-card {
+  width: auto;
+  max-width: none;
+}
+
+/* Catalog · feature: the first item leads, the rest follow. */
+.sc-section--v-feature .sc-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.25rem;
+}
+.sc-section--v-feature .sc-card {
+  min-width: 0;
+}
+.sc-section--v-feature .sc-card:first-child {
+  grid-column: span 2;
+}
+/* Only a photo fills two rows; a text-only lead card would sit half empty. */
+.sc-section--v-feature .sc-card:first-child:has(.sc-card__image) {
+  grid-row: span 2;
+}
+.sc-section--v-feature .sc-card:first-child .sc-card__image {
+  aspect-ratio: 16 / 10;
+}
+.sc-section--v-feature .sc-card:first-child .sc-card__title {
+  font-size: 1.5rem;
+}
+
+/* Testimonials · spotlight: one review carries the section. */
+.sc-section--v-spotlight .sc-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  max-width: 980px;
+  margin: 0 auto;
+}
+.sc-section--v-spotlight .sc-testimonial-card {
+  min-width: 0;
+}
+.sc-section--v-spotlight .sc-testimonial-card:first-child {
+  grid-column: 1 / -1;
+  background: transparent;
+  box-shadow: none;
+  text-align: center;
+  padding: 1rem 0 2rem;
+}
+.sc-section--v-spotlight
+  .sc-testimonial-card:first-child
+  .sc-testimonial__content {
+  font-family: var(--ai-heading-font);
+  font-size: clamp(1.375rem, 2.6vw, 2rem);
+  line-height: 1.3;
+  color: var(--ai-text);
+  text-wrap: balance;
+}
+.sc-section--v-spotlight
+  .sc-testimonial-card:first-child
+  .sc-testimonial__footer {
+  align-items: center;
+}
+.sc-section--v-spotlight .sc-testimonial-card:nth-child(n + 4) {
+  display: none;
+}
+
+/* Testimonials · stack: a single column of quotes with a brand rule. */
+.sc-section--v-stack .sc-card-grid {
+  flex-direction: column;
+  flex-wrap: nowrap;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.sc-section--v-stack .sc-testimonial-card {
+  flex: none;
+  min-width: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  border-left: 3px solid var(--ai-primary);
+  padding: 0.25rem 0 0.25rem 1.25rem;
+}
+
+/* FAQ · split: heading on the left, questions on the right. */
+@media (min-width: 900px) {
+  .sc-faq-section.sc-section--v-split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.6fr);
+    column-gap: 3rem;
+    align-items: start;
+  }
+  .sc-section--v-split .sc-section__title,
+  .sc-section--v-split .sc-section__subtitle {
+    grid-column: 1;
+    text-align: left;
+  }
+  .sc-section--v-split .sc-faq-list {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    max-width: none;
+    margin: 0;
+  }
+}
+
+/* Phone: every multi-column variant becomes one column. */
+@media (max-width: 640px) {
+  .sc-section--v-feature .sc-card-grid,
+  .sc-section--v-spotlight .sc-card-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-section--v-feature .sc-card:first-child {
+    grid-column: auto;
+    grid-row: auto;
+  }
+  .sc-section--v-list .sc-card__image {
+    width: 88px;
+  }
+  .sc-section--v-list .sc-card__body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .sc-section--v-list .sc-card__meta {
+    grid-column: 1;
+    grid-row: auto;
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+/* ── Team (#2308) ─────────────────────────────────────────────────── */
+.sc-team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+.sc-team-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: var(--ai-surface);
+  border-radius: var(--ai-radius);
+  padding: 1.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  min-width: 0;
+}
+.sc-team-card__photo,
+.sc-team-card__initials {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex: none;
+}
+.sc-team-card__initials {
+  display: grid;
+  place-items: center;
+  background: var(--ai-primary);
+  color: #fff;
+  font-family: var(--ai-heading-font);
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+.sc-team-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+.sc-team-card__name {
+  font-family: var(--ai-heading-font);
+  font-size: 1.25rem;
+  margin: 0;
+  color: var(--ai-text);
+}
+.sc-team-card__specialty {
+  margin: 0;
+  color: var(--ai-primary);
+  font-weight: 600;
+}
+.sc-team-card__verified {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: var(--ai-text-muted);
+}
+.sc-team-card__bio {
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.6;
+  color: var(--ai-text-muted);
+}
+.sc-team-card__bio p {
+  margin: 0 0 0.5rem;
+}
+/* Team · list: one wide row per professional, photo beside the bio. */
+.sc-team-section.sc-section--v-list .sc-team-grid {
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 880px;
+}
+.sc-team-section.sc-section--v-list .sc-team-card {
+  flex-direction: row;
+  align-items: flex-start;
+}
+@media (max-width: 640px) {
+  .sc-team-section.sc-section--v-list .sc-team-card {
+    flex-direction: column;
+  }
+}

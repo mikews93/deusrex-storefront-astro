@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { v1 } from '../../runtime/public-api-config';
+import { LOCALE, v1 } from '../../runtime/public-api-config';
+import { sectionClass } from './section-variant';
 
 /**
  * Spec 004 — the rest of the home-page islands. Kept in one file because
@@ -13,6 +14,8 @@ import { v1 } from '../../runtime/public-api-config';
 interface SectionMeta {
   title?: string;
   subtitle?: string;
+  /** Layout the generator chose (#2308); unknown values fall back to the default. */
+  variant?: string;
 }
 
 function useApi<T>(path: string): {
@@ -63,6 +66,7 @@ interface Testimonial {
 export function TestimonialsIsland({
   title,
   subtitle,
+  variant,
 }: SectionMeta): JSX.Element | null {
   const { data, loading, error } = useApi<Testimonial[]>('/testimonials');
   if (error) {
@@ -73,7 +77,7 @@ export function TestimonialsIsland({
   if (!data || data.length === 0) return null;
 
   return (
-    <section className="sc-section sc-testimonials-section">
+    <section className={sectionClass('sc-testimonials-section', variant, TESTIMONIAL_VARIANTS)}>
       {title && <h2 className="sc-section__title">{title}</h2>}
       {subtitle && <p className="sc-section__subtitle">{subtitle}</p>}
       <div className="sc-card-grid">
@@ -114,6 +118,7 @@ interface Faq {
 export function FaqsIsland({
   title,
   subtitle,
+  variant,
 }: SectionMeta): JSX.Element | null {
   const { data, loading, error } = useApi<Faq[]>('/faqs');
   if (error) {
@@ -124,7 +129,7 @@ export function FaqsIsland({
   if (!data || data.length === 0) return null;
 
   return (
-    <section className="sc-section sc-faq-section">
+    <section className={sectionClass('sc-faq-section', variant, FAQ_VARIANTS)}>
       {title && <h2 className="sc-section__title">{title}</h2>}
       {subtitle && <p className="sc-section__subtitle">{subtitle}</p>}
       <div className="sc-faq-list">
@@ -189,6 +194,7 @@ interface Location {
 export function LocationsIsland({
   title,
   subtitle,
+  variant,
 }: SectionMeta): JSX.Element | null {
   const { data, loading, error } = useApi<Location[]>('/locations');
   if (error) {
@@ -199,7 +205,7 @@ export function LocationsIsland({
   if (!data || data.length === 0) return null;
 
   return (
-    <section className="sc-section sc-locations-section">
+    <section className={sectionClass('sc-locations-section', variant, LOCATION_VARIANTS)}>
       {title && <h2 className="sc-section__title">{title}</h2>}
       {subtitle && <p className="sc-section__subtitle">{subtitle}</p>}
       <div className="sc-card-grid">
@@ -225,6 +231,96 @@ export function LocationsIsland({
       </div>
     </section>
   );
+}
+
+// ── Team ───────────────────────────────────────────────────────────────
+
+interface TeamMember {
+  displayName: string;
+  specialty: string | null;
+  /** Rendered and sanitized by the backend, as on the public directory. */
+  bioHtml: string | null;
+  credentialBody: string | null;
+  credentialYear: string | null;
+  verifiedBy: 'rethus' | 'reps';
+  photoUrl: string | null;
+}
+
+const VERIFIED_LABEL: Record<typeof LOCALE, (registry: string) => string> = {
+  es: (registry) => `Verificado en ${registry}`,
+  en: (registry) => `Verified in ${registry}`,
+  pt: (registry) => `Verificado no ${registry}`,
+};
+
+/**
+ * Only professionals on the clinic's published directory listing (#2308):
+ * the endpoint returns nobody else, so a clinic that never published, or
+ * withdrew, shows no team section at all.
+ */
+export function TeamIsland({
+  title,
+  subtitle,
+  variant,
+}: SectionMeta): JSX.Element | null {
+  const { data, loading, error } = useApi<TeamMember[]>(`/team?lang=${LOCALE}`);
+  if (error) {
+    console.warn(`[TeamIsland] ${error}`);
+    return null;
+  }
+  if (loading) return <SectionSkeleton title={title} subtitle={subtitle} />;
+  if (!data || data.length === 0) return null;
+
+  return (
+    <section className={sectionClass('sc-team-section', variant, TEAM_VARIANTS)}>
+      {title && <h2 className="sc-section__title">{title}</h2>}
+      {subtitle && <p className="sc-section__subtitle">{subtitle}</p>}
+      <div className="sc-team-grid">
+        {data.map((member) => (
+          <article key={member.displayName} className="sc-team-card">
+            {member.photoUrl ? (
+              <img
+                src={member.photoUrl}
+                alt={member.displayName}
+                className="sc-team-card__photo"
+                loading="lazy"
+              />
+            ) : (
+              <span className="sc-team-card__initials" aria-hidden="true">
+                {initials(member.displayName)}
+              </span>
+            )}
+            <div className="sc-team-card__body">
+              <h3 className="sc-team-card__name">{member.displayName}</h3>
+              {member.specialty && (
+                <p className="sc-team-card__specialty">{member.specialty}</p>
+              )}
+              <p className="sc-team-card__verified">
+                {VERIFIED_LABEL[LOCALE](
+                  member.verifiedBy === 'rethus' ? 'ReTHUS' : 'REPS',
+                )}
+                {member.credentialYear ? ` · ${member.credentialYear}` : ''}
+              </p>
+              {member.bioHtml && (
+                <div
+                  className="sc-team-card__bio"
+                  dangerouslySetInnerHTML={{ __html: member.bioHtml }}
+                />
+              )}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function initials(name: string): string {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase() ?? '')
+    .join('');
 }
 
 // ── Contact ────────────────────────────────────────────────────────────
@@ -305,6 +401,11 @@ export function FooterSocialIsland(): JSX.Element | null {
 }
 
 // ── Shared sub-components ──────────────────────────────────────────────
+
+const TESTIMONIAL_VARIANTS = ['grid', 'spotlight', 'stack'] as const;
+const FAQ_VARIANTS = ['list', 'split'] as const;
+const LOCATION_VARIANTS = ['grid', 'list'] as const;
+const TEAM_VARIANTS = ['grid', 'list'] as const;
 
 function SectionSkeleton({
   title,
