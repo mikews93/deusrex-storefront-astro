@@ -772,6 +772,16 @@
   display: none;
 }
 
+/* The variant owns card sizing: a width the theme CSS set for the default
+ * flex grid (e.g. max-width: 420px) would pin the lead card to one column. */
+.sc-section--v-feature .sc-card,
+.sc-section--v-list .sc-card,
+.sc-section--v-spotlight .sc-testimonial-card,
+.sc-section--v-stack .sc-testimonial-card {
+  width: auto;
+  max-width: none;
+}
+
 /* Catalog · feature: the first item leads, the rest follow. */
 .sc-section--v-feature .sc-card-grid {
   display: grid;
