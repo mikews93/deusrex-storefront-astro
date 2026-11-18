@@ -8,6 +8,7 @@
  */
 import '../styles/global.css';
 import '../styles/storefront.css';
+import { ORG_SLUG, PUBLIC_API_BASE_URL } from '../runtime/public-api-config';
 
 interface Props {
   title?: string;
@@ -42,6 +43,11 @@ const jsonLd =
   typeof website.jsonLd === 'string' ? website.jsonLd.replace(/<\//g, '<\\/') : '';
 const fontFamily = designSystem?.fontFamily || website.fontFamily || 'Inter';
 const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
+// "Tu sitio en números" (deusrex#2351). Unset on a template-author build,
+// where the constants are still placeholders.
+const statsUrl = PUBLIC_API_BASE_URL.startsWith('http')
+  ? `${PUBLIC_API_BASE_URL}/public/site-stats/${encodeURIComponent(ORG_SLUG)}`
+  : '';
 ---
 
 <!doctype html>
@@ -117,6 +123,42 @@ const headingFontFamily = designSystem?.headingFontFamily || fontFamily;
     {/* Chat widget */}
     {website.showChat && website.chatWidgetUrl && (
       <script src={website.chatWidgetUrl} data-widget-key={business.orgSlug} defer></script>
+    )}
+
+    {/* Site numbers for the clinic (deusrex#2351): a page view, the first
+        visit of the day, and taps on booking, WhatsApp and call. Counts only:
+        no cookie, no identifier, nothing about the visitor is sent. */}
+    {statsUrl && (
+      <script is:inline define:vars={{ statsUrl }}>
+        (function () {
+          if (!navigator.sendBeacon) return;
+          function send(event) {
+            try {
+              navigator.sendBeacon(statsUrl + '?e=' + event);
+            } catch (e) {}
+          }
+          send('view');
+          try {
+            var today = new Date().toDateString();
+            if (localStorage.getItem('sc-visit-day') !== today) {
+              localStorage.setItem('sc-visit-day', today);
+              send('visitor');
+            }
+          } catch (e) {}
+          document.addEventListener(
+            'click',
+            function (event) {
+              var link = event.target && event.target.closest && event.target.closest('a[href]');
+              if (!link) return;
+              var href = link.getAttribute('href') || '';
+              if (/wa\.me\/|api\.whatsapp\.com/.test(href)) send('whatsapp_click');
+              else if (/^tel:/.test(href)) send('call_click');
+              else if (/(^|\/)book(\/|\.html|\?|#|$)/.test(href)) send('booking_click');
+            },
+            true,
+          );
+        })();
+      </script>
     )}
 
     {/* Adopt non-React floating actions into the FAB stack. The cart button is
