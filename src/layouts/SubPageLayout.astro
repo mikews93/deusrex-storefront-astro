@@ -12,12 +12,14 @@ import CartIsland from '../islands/CartIsland.tsx';
 interface Props {
   title?: string;
   description?: string;
+  ogType?: 'website' | 'article';
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogType } = Astro.props;
 ---
 
-<BaseLayout title={title} description={description}>
+<BaseLayout title={title} description={description} ogType={ogType}>
+  <slot name="head" slot="head" />
   <Header />
   <CartIsland client:load />
   <main class="sf-main">

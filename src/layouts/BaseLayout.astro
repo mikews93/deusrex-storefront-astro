@@ -13,9 +13,11 @@ import { ORG_SLUG, PUBLIC_API_BASE_URL } from '../runtime/public-api-config';
 interface Props {
   title?: string;
   description?: string;
+  /** `article` on a /recursos guide (deusrex#2352); `website` elsewhere. */
+  ogType?: 'website' | 'article';
 }
 
-const { title, description } = Astro.props;
+const { title, description, ogType = 'website' } = Astro.props;
 
 // Site data injected at build time
 const siteData = await import('../data/site-data.json');
@@ -63,7 +65,7 @@ const statsUrl = PUBLIC_API_BASE_URL.startsWith('http')
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={pageDescription} />
     <meta property="og:url" content={canonicalUrl} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     {website.ogImageUrl && <meta property="og:image" content={website.ogImageUrl} />}
 
     {/* Twitter */}
@@ -110,6 +112,8 @@ const statsUrl = PUBLIC_API_BASE_URL.startsWith('http')
 
     {/* JSON-LD structured data — injected at build time */}
     {jsonLd && <script type="application/ld+json" set:html={jsonLd} />}
+    {/* A page's own head tags (a guide's Article JSON-LD, deusrex#2352). */}
+    <slot name="head" />
   </head>
   <body>
     <slot />

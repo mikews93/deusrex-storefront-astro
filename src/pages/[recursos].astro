@@ -1,0 +1,100 @@
+---
+/**
+ * /recursos — the clinic's guides (deusrex#2352). A dynamic segment with one
+ * path, so a site without guides emits no page at all: an empty list would
+ * be a thin page search engines hold against the whole site.
+ */
+import SubPageLayout from '../layouts/SubPageLayout.astro';
+import { descriptionOf, siteResources } from '../lib/resources';
+
+export function getStaticPaths() {
+  return siteResources() ? [{ params: { recursos: 'recursos' } }] : [];
+}
+
+const resources = siteResources()!;
+const dateOf = (iso: string | null) =>
+  iso
+    ? new Date(iso).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })
+    : null;
+---
+
+<SubPageLayout title="Recursos" description="Guías para pacientes y familias, escritas por nuestro equipo.">
+  <div class="sf-container">
+    <h1 class="sf-page-title">Recursos</h1>
+    <p class="rs-lead">Guías cortas para pacientes y familias, escritas por nuestro equipo.</p>
+    <ul class="rs-list">
+      {resources.items.map((item) => (
+        <li>
+          <a class="rs-card" href={`/recursos/${item.slug}`} data-resource={item.slug}>
+            <span class="rs-kicker">Guía · {item.readingMinutes} min</span>
+            <h2 class="rs-title">{item.content.title}</h2>
+            <p class="rs-intro">{descriptionOf(item)}</p>
+            {dateOf(item.publishedAt) && <span class="rs-date">{dateOf(item.publishedAt)}</span>}
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</SubPageLayout>
+
+<style>
+  .rs-lead {
+    margin: -1.25rem 0 2rem;
+    color: var(--ai-text-muted);
+    max-width: 60ch;
+  }
+  .rs-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+  }
+  .rs-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    height: 100%;
+    padding: 1.25rem;
+    border: 1px solid color-mix(in srgb, var(--ai-text) 12%, transparent);
+    border-radius: var(--ai-radius);
+    background: var(--ai-surface);
+    color: var(--ai-text);
+    text-decoration: none;
+    transition: border-color 150ms ease, transform 150ms ease;
+  }
+  .rs-card:hover,
+  .rs-card:focus-visible {
+    border-color: var(--ai-primary);
+    transform: translateY(-2px);
+  }
+  .rs-kicker {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ai-primary);
+  }
+  .rs-title {
+    margin: 0;
+    font-family: var(--ai-heading-font);
+    font-size: 1.25rem;
+    line-height: 1.25;
+  }
+  .rs-intro {
+    margin: 0;
+    color: var(--ai-text-muted);
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+  .rs-date {
+    margin-top: auto;
+    font-size: 0.8rem;
+    color: var(--ai-text-muted);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .rs-card { transition: none; }
+    .rs-card:hover, .rs-card:focus-visible { transform: none; }
+  }
+</style>
