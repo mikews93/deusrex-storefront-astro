@@ -983,3 +983,100 @@
     flex-direction: column;
   }
 }
+
+/* ── Scroll video (#2309) ─────────────────────────────────────────────────
+   A tall track with a sticky stage: scrolling the track scrubs the canvas.
+   Each scene gets ~1.6 screens of travel, enough to read its caption. */
+.sc-scroll-video {
+  position: relative;
+}
+.sc-scroll-video__track {
+  position: relative;
+  height: calc(var(--sv-scenes, 1) * 160svh + 100svh);
+}
+.sc-scroll-video__stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  overflow: hidden;
+  background: var(--ai-surface, #111);
+}
+.sc-scroll-video__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+/* Captions sit on the lower third; the shade keeps them legible on any frame. */
+.sc-scroll-video__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.65), rgb(0 0 0 / 0) 55%);
+  pointer-events: none;
+}
+.sc-scroll-video__caption {
+  position: absolute;
+  left: clamp(1rem, 5vw, 4rem);
+  right: clamp(1rem, 5vw, 4rem);
+  bottom: clamp(2rem, 10svh, 6rem);
+  margin: 0;
+  max-width: 22ch;
+  font-family: var(--ai-heading-font);
+  font-size: clamp(1.75rem, 4.5vw, 3.5rem);
+  line-height: 1.1;
+  color: #fff;
+  text-shadow: 0 1px 16px rgb(0 0 0 / 0.35);
+  text-wrap: balance;
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.sc-scroll-video__caption.is-active {
+  opacity: 1;
+  transform: none;
+}
+/* Portrait phones: a landscape clip cropped to the full height is mostly
+   upscaled blur, so the clip keeps a band at the top and the caption sits
+   below it on the section colour, legible on any frame. */
+@media (max-aspect-ratio: 4/5) {
+  .sc-scroll-video__canvas {
+    inset: 0 0 auto;
+    height: 70%;
+  }
+  .sc-scroll-video__shade {
+    display: none;
+  }
+  .sc-scroll-video__caption {
+    top: calc(70% + 1.5rem);
+    bottom: auto;
+    text-shadow: none;
+  }
+}
+/* Reduced motion: the same scenes as a still stack. */
+.sc-scroll-video--still {
+  display: grid;
+  gap: 1rem;
+}
+.sc-scroll-video__still {
+  position: relative;
+  margin: 0;
+  border-radius: var(--ai-radius, 12px);
+  overflow: hidden;
+}
+.sc-scroll-video__still img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+.sc-scroll-video__still .sc-scroll-video__caption {
+  opacity: 1;
+  transform: none;
+  transition: none;
+  font-size: clamp(1.25rem, 3vw, 2rem);
+  bottom: 1rem;
+  text-shadow: 0 1px 12px rgb(0 0 0 / 0.6);
+}
