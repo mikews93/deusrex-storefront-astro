@@ -1,0 +1,91 @@
+---
+/**
+ * One guide on the clinic's own site (deusrex#2352): the text the clinic
+ * reviewed for its gancho, unchanged, as a page of the site — its header,
+ * its colours, its booking flow. Built from the publish's site data, so the
+ * page is real HTML for search; the clinic's site is its canonical home and
+ * the directory copy points here.
+ */
+import SubPageLayout from '../../layouts/SubPageLayout.astro';
+import GuideArticle from '../../components/resources/GuideArticle.astro';
+import { descriptionOf, siteResources, type SiteResource } from '../../lib/resources';
+import siteDataModule from '../../data/site-data.json';
+
+export function getStaticPaths() {
+  return (siteResources()?.items ?? []).map((resource) => ({
+    params: { slug: resource.slug },
+    props: { resource },
+  }));
+}
+
+const { resource } = Astro.props as { resource: SiteResource };
+const resources = siteResources()!;
+const siteData = (siteDataModule as { default?: unknown }).default ?? siteDataModule;
+const business = (siteData as { business: { name: string } }).business;
+const pageUrl = new URL(`/recursos/${resource.slug}`, Astro.site ?? 'https://example.deusrex.io').toString();
+
+// The page's structured data: a medical page whose subject is the article.
+// Data, never markup — escaped as the layout escapes its own JSON-LD.
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'MedicalWebPage',
+  url: pageUrl,
+  name: resource.content.title,
+  description: descriptionOf(resource),
+  inLanguage: 'es',
+  lastReviewed: resource.updatedAt,
+  mainEntity: {
+    '@type': 'Article',
+    headline: resource.content.title,
+    description: descriptionOf(resource),
+    datePublished: resource.publishedAt ?? resource.updatedAt,
+    dateModified: resource.updatedAt,
+    author: resources.author
+      ? {
+          '@type': 'Person',
+          name: resources.author.name,
+          ...(resources.author.specialty ? { jobTitle: resources.author.specialty } : {}),
+        }
+      : { '@type': 'Organization', name: business.name },
+    publisher: { '@type': 'Organization', name: business.name },
+  },
+}).replace(/<\//g, '<\\/');
+const checkUrl = resources.guideApiBase
+  ? `${resources.guideApiBase}/${encodeURIComponent(resource.slug)}`
+  : '';
+---
+
+<SubPageLayout title={resource.content.title} description={descriptionOf(resource)} ogType="article">
+  <script slot="head" type="application/ld+json" set:html={jsonLd} />
+  <GuideArticle resource={resource} author={resources.author} businessName={business.name} />
+
+  {/* A guide the clinic takes off its gancho leaves the site now, not at the
+      next publish: the live API says whether it still is published (and the
+      same read counts the view). Only a definite 404 hides it; an outage
+      leaves the page as built. */}
+  <script is:inline define:vars={{ checkUrl }}>
+    if (checkUrl) {
+      fetch(checkUrl, { headers: { Accept: 'application/json' } })
+        .then(function (response) {
+          if (response.status !== 404) return;
+          var robots = document.createElement('meta');
+          robots.name = 'robots';
+          robots.content = 'noindex';
+          document.head.appendChild(robots);
+          var article = document.querySelector('[data-guide]');
+          if (!article) return;
+          var gone = document.createElement('div');
+          gone.className = 'sf-container rs-gone';
+          var title = document.createElement('h1');
+          title.className = 'sf-page-title';
+          title.textContent = 'Esta guía ya no está disponible';
+          var back = document.createElement('a');
+          back.href = '/recursos';
+          back.textContent = 'Ver otras guías';
+          gone.append(title, back);
+          article.replaceWith(gone);
+        })
+        .catch(function () {});
+    }
+  </script>
+</SubPageLayout>

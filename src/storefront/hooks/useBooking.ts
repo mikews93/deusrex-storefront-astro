@@ -195,7 +195,8 @@ export function useCreateBooking(orgSlug: string) {
       const res = await fetch(`${API_BASE}/public/booking/${orgSlug}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
+        // Counted in the clinic's "Tu sitio en números" (deusrex#2351).
+        body: JSON.stringify({ ...data, source: 'website' }),
       });
       if (!res.ok) throw new Error('Booking failed');
       return res.json();
